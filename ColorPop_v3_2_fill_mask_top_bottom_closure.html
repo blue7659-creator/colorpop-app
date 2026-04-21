@@ -1664,7 +1664,6 @@ const CP_Music = (() => {
   let currentScene = null;
   let isMuted = false;
 
-  // 볼륨 줄임 (기존보다 절반으로)
   const VOLUME = { home: 0.18, draw: 0.10, loading: 0.15, upload: 0.18 };
 
   function fadeOutAndPlay(sceneName) {
@@ -1707,7 +1706,14 @@ const CP_Music = (() => {
   return { switchScene, toggleMute };
 })();
 
-// 색칠 화면 진입 감지 (coloring 화면이 active 될 때)
+// showHome 감싸기
+const _origShowHome = window.showHome;
+window.showHome = function() {
+  if (_origShowHome) _origShowHome();
+  CP_Music.switchScene('home');
+};
+
+// 색칠 화면 감지 (class 변화로)
 const _coloringScreen = document.getElementById('coloringScreen');
 if (_coloringScreen) {
   new MutationObserver(() => {
@@ -1717,31 +1723,14 @@ if (_coloringScreen) {
   }).observe(_coloringScreen, { attributes: true, attributeFilter: ['class'] });
 }
 
-// 홈 화면 감지
-const _homeScreen = document.getElementById('homeScreen');
-if (_homeScreen) {
-  new MutationObserver(() => {
-    if (_homeScreen.classList.contains('active')) {
-      CP_Music.switchScene('home');
-    }
-  }).observe(_homeScreen, { attributes: true, attributeFilter: ['class'] });
-}
-
-// 업로드 화면 감지
-const _uploadScreen = document.getElementById('uploadScreen');
-if (_uploadScreen) {
-  new MutationObserver(() => {
-    if (_uploadScreen.classList.contains('active')) {
-      CP_Music.switchScene('upload');
-    }
-  }).observe(_uploadScreen, { attributes: true, attributeFilter: ['class'] });
-}
-
 // 로딩(변환중) 감지
 const _loadingEl = document.querySelector('.loading');
 if (_loadingEl) {
   new MutationObserver(() => {
     if (_loadingEl.classList.contains('visible')) CP_Music.switchScene('loading');
+    else if (_coloringScreen && !_coloringScreen.classList.contains('active')) {
+      CP_Music.switchScene('home');
+    }
   }).observe(_loadingEl, { attributes: true, attributeFilter: ['class'] });
 }
 
