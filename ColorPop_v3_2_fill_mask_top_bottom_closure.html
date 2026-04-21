@@ -1749,5 +1749,76 @@ muteBtn.addEventListener('click', (e) => {
   muteBtn.innerHTML = CP_Music.toggleMute() ? '🔇' : '🎵';
 });
 document.body.appendChild(muteBtn);
+// ============================================================
+// 🔔 도구 클릭 효과음
+// ============================================================
+
+const CP_SFX = (() => {
+  let ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+
+  // 도구별 효과음 (각각 다른 톤!)
+  const TOOL_SOUNDS = {
+    coloredPencil: { freq: 800,  endFreq: 600,  dur: 0.08, type: 'triangle' }, // 색연필: 사각사각
+    brush:         { freq: 400,  endFreq: 300,  dur: 0.12, type: 'sine'     }, // 붓: 부드럽게
+    pencil:        { freq: 1000, endFreq: 800,  dur: 0.06, type: 'triangle' }, // 연필: 가볍게
+    marker:        { freq: 300,  endFreq: 250,  dur: 0.10, type: 'square'   }, // 마커: 굵게
+    fill:          { freq: 600,  endFreq: 900,  dur: 0.15, type: 'sine'     }, // 채우기: 올라가는 느낌
+    eraser:        { freq: 200,  endFreq: 150,  dur: 0.10, type: 'sine'     }, // 지우개: 낮게
+  };
+
+  function playTool(toolName) {
+    const c = getCtx();
+    const s = TOOL_SOUNDS[toolName] || TOOL_SOUNDS.pencil;
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.type = s.type;
+    osc.frequency.setValueAtTime(s.freq, c.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(s.endFreq, c.currentTime + s.dur);
+    gain.gain.setValueAtTime(0.25, c.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + s.dur);
+    osc.connect(gain);
+    gain.connect(c.destination);
+    osc.start(c.currentTime);
+    osc.stop(c.currentTime + s.dur + 0.05);
+  }
+
+  // 색상 팔레트 클릭 소리 (뿅!)
+  function playColor() {
+    const c = getCtx();
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1400, c.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(700, c.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.2, c.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
+    osc.connect(gain);
+    gain.connect(c.destination);
+    osc.start(c.currentTime);
+    osc.stop(c.currentTime + 0.15);
+  }
+
+  return { playTool, playColor };
+})();
+
+// 도구 버튼에 효과음 자동 연결
+['coloredPencilTool','brushTool','pencilTool','markerTool','fillTool','eraserTool']
+  .forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', () => {
+      const toolName = id.replace('Tool', '');
+      CP_SFX.playTool(toolName);
+    });
+  });
+
+// 크레용 팔레트에 효과음 자동 연결
+document.querySelectorAll('.crayon-item').forEach(item => {
+  item.addEventListener('click', () => CP_SFX.playColor());
+});
 </script>
 </html>
