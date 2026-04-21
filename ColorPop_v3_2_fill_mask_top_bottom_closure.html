@@ -1664,7 +1664,8 @@ const CP_Music = (() => {
   let currentScene = null;
   let isMuted = false;
 
-  const VOLUME = { home: 0.35, draw: 0.20, loading: 0.30, upload: 0.35 };
+  // 볼륨 줄임 (기존보다 절반으로)
+  const VOLUME = { home: 0.18, draw: 0.10, loading: 0.15, upload: 0.18 };
 
   function fadeOutAndPlay(sceneName) {
     const trackSrc = TRACKS[sceneName];
@@ -1685,7 +1686,7 @@ const CP_Music = (() => {
       audio.play().catch(() => {});
       const targetVol = isMuted ? 0 : VOLUME[sceneName];
       const fadeIn = setInterval(() => {
-        if (audio.volume < targetVol - 0.02) { audio.volume = Math.min(audio.volume + 0.02, targetVol); }
+        if (audio.volume < targetVol - 0.01) { audio.volume = Math.min(audio.volume + 0.01, targetVol); }
         else { audio.volume = targetVol; clearInterval(fadeIn); }
       }, 30);
     }, 350);
@@ -1699,39 +1700,58 @@ const CP_Music = (() => {
 
   function toggleMute() {
     isMuted = !isMuted;
-    if (currentAudio) currentAudio.volume = isMuted ? 0 : (VOLUME[currentScene] || 0.3);
+    if (currentAudio) currentAudio.volume = isMuted ? 0 : (VOLUME[currentScene] || 0.15);
     return isMuted;
   }
 
   return { switchScene, toggleMute };
 })();
 
-const _origShowScreen = window.showScreen;
-window.showScreen = function(screenName) {
-  if (_origShowScreen) _origShowScreen(screenName);
-  else {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(screenName + 'Screen');
-    if (target) target.classList.add('active');
-  }
-  if (screenName === 'home')     CP_Music.switchScene('home');
-  if (screenName === 'upload')   CP_Music.switchScene('upload');
-  if (screenName === 'coloring') CP_Music.switchScene('draw');
-};
+// 색칠 화면 진입 감지 (coloring 화면이 active 될 때)
+const _coloringScreen = document.getElementById('coloringScreen');
+if (_coloringScreen) {
+  new MutationObserver(() => {
+    if (_coloringScreen.classList.contains('active')) {
+      CP_Music.switchScene('draw');
+    }
+  }).observe(_coloringScreen, { attributes: true, attributeFilter: ['class'] });
+}
 
+// 홈 화면 감지
+const _homeScreen = document.getElementById('homeScreen');
+if (_homeScreen) {
+  new MutationObserver(() => {
+    if (_homeScreen.classList.contains('active')) {
+      CP_Music.switchScene('home');
+    }
+  }).observe(_homeScreen, { attributes: true, attributeFilter: ['class'] });
+}
+
+// 업로드 화면 감지
+const _uploadScreen = document.getElementById('uploadScreen');
+if (_uploadScreen) {
+  new MutationObserver(() => {
+    if (_uploadScreen.classList.contains('active')) {
+      CP_Music.switchScene('upload');
+    }
+  }).observe(_uploadScreen, { attributes: true, attributeFilter: ['class'] });
+}
+
+// 로딩(변환중) 감지
 const _loadingEl = document.querySelector('.loading');
 if (_loadingEl) {
   new MutationObserver(() => {
     if (_loadingEl.classList.contains('visible')) CP_Music.switchScene('loading');
-    else if (document.getElementById('uploadScreen')?.classList.contains('active')) CP_Music.switchScene('upload');
   }).observe(_loadingEl, { attributes: true, attributeFilter: ['class'] });
 }
 
+// 첫 클릭 시 홈 음악 시작
 document.addEventListener('click', function startMusic() {
   CP_Music.switchScene('home');
   document.removeEventListener('click', startMusic);
 }, { once: true });
 
+// 음소거 버튼
 const muteBtn = document.createElement('button');
 muteBtn.innerHTML = '🎵';
 muteBtn.style.cssText = `position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; border:1.5px solid #FFD6E7; background:#fff; font-size:20px; cursor:pointer; box-shadow:0 4px 12px rgba(139,58,82,0.15); z-index:9998;`;
