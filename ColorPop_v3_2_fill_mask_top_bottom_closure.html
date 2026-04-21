@@ -1651,4 +1651,94 @@ window.addEventListener('DOMContentLoaded', function(){
 </script>
 
 </body>
+<script>
+const CP_Music = (() => {
+  const TRACKS = {
+    home:    'the_mountain-happy-playful-kids-music-450659.mp3',
+    draw:    'vitmatnotes-spring-adventure-198193.mp3',
+    loading: 'the_mountain-magical-christmas-christmas-background-449471.mp3',
+  };
+  TRACKS.upload = TRACKS.home;
+
+  let currentAudio = null;
+  let currentScene = null;
+  let isMuted = false;
+
+  const VOLUME = { home: 0.35, draw: 0.20, loading: 0.30, upload: 0.35 };
+
+  function fadeOutAndPlay(sceneName) {
+    const trackSrc = TRACKS[sceneName];
+    if (!trackSrc) return;
+    if (currentAudio && !currentAudio.paused) {
+      const fadingAudio = currentAudio;
+      const fadeInterval = setInterval(() => {
+        if (fadingAudio.volume > 0.03) { fadingAudio.volume -= 0.03; }
+        else { fadingAudio.pause(); fadingAudio.currentTime = 0; clearInterval(fadeInterval); }
+      }, 30);
+    }
+    setTimeout(() => {
+      if (currentScene !== sceneName) return;
+      const audio = new Audio(trackSrc);
+      audio.loop = true;
+      audio.volume = 0;
+      currentAudio = audio;
+      audio.play().catch(() => {});
+      const targetVol = isMuted ? 0 : VOLUME[sceneName];
+      const fadeIn = setInterval(() => {
+        if (audio.volume < targetVol - 0.02) { audio.volume = Math.min(audio.volume + 0.02, targetVol); }
+        else { audio.volume = targetVol; clearInterval(fadeIn); }
+      }, 30);
+    }, 350);
+  }
+
+  function switchScene(sceneName) {
+    if (currentScene === sceneName) return;
+    currentScene = sceneName;
+    fadeOutAndPlay(sceneName);
+  }
+
+  function toggleMute() {
+    isMuted = !isMuted;
+    if (currentAudio) currentAudio.volume = isMuted ? 0 : (VOLUME[currentScene] || 0.3);
+    return isMuted;
+  }
+
+  return { switchScene, toggleMute };
+})();
+
+const _origShowScreen = window.showScreen;
+window.showScreen = function(screenName) {
+  if (_origShowScreen) _origShowScreen(screenName);
+  else {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(screenName + 'Screen');
+    if (target) target.classList.add('active');
+  }
+  if (screenName === 'home')     CP_Music.switchScene('home');
+  if (screenName === 'upload')   CP_Music.switchScene('upload');
+  if (screenName === 'coloring') CP_Music.switchScene('draw');
+};
+
+const _loadingEl = document.querySelector('.loading');
+if (_loadingEl) {
+  new MutationObserver(() => {
+    if (_loadingEl.classList.contains('visible')) CP_Music.switchScene('loading');
+    else if (document.getElementById('uploadScreen')?.classList.contains('active')) CP_Music.switchScene('upload');
+  }).observe(_loadingEl, { attributes: true, attributeFilter: ['class'] });
+}
+
+document.addEventListener('click', function startMusic() {
+  CP_Music.switchScene('home');
+  document.removeEventListener('click', startMusic);
+}, { once: true });
+
+const muteBtn = document.createElement('button');
+muteBtn.innerHTML = '🎵';
+muteBtn.style.cssText = `position:fixed; bottom:24px; right:24px; width:44px; height:44px; border-radius:50%; border:1.5px solid #FFD6E7; background:#fff; font-size:20px; cursor:pointer; box-shadow:0 4px 12px rgba(139,58,82,0.15); z-index:9998;`;
+muteBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  muteBtn.innerHTML = CP_Music.toggleMute() ? '🔇' : '🎵';
+});
+document.body.appendChild(muteBtn);
+</script>
 </html>
