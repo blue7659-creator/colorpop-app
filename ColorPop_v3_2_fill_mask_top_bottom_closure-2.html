@@ -650,19 +650,14 @@ function initCanvas(imageUrl, mode) {
   var lineCanvas = document.getElementById('lineLayer');
   var img = new Image();
   img.onload = function() {
-    var dpr = window.devicePixelRatio || 1;
     canvasW = img.width; canvasH = img.height;
-    colorCanvas.width = canvasW * dpr; colorCanvas.height = canvasH * dpr;
-    colorCanvas.style.width = canvasW + 'px'; colorCanvas.style.height = canvasH + 'px';
-    lineCanvas.width = canvasW * dpr; lineCanvas.height = canvasH * dpr;
-    lineCanvas.style.width = canvasW + 'px'; lineCanvas.style.height = canvasH + 'px';
+    colorCanvas.width = canvasW; colorCanvas.height = canvasH;
+    lineCanvas.width = canvasW; lineCanvas.height = canvasH;
     var colorCtx = colorCanvas.getContext('2d');
-    colorCtx.scale(dpr, dpr);
     colorCtx.clearRect(0, 0, canvasW, canvasH);
     colorCtx.fillStyle = '#FFFFFF';
     colorCtx.fillRect(0, 0, canvasW, canvasH);
     var lineCtx = lineCanvas.getContext('2d');
-    lineCtx.scale(dpr, dpr);
     lineCtx.clearRect(0, 0, canvasW, canvasH);
     lineCtx.drawImage(img, 0, 0);
 
@@ -1160,7 +1155,7 @@ async function makeVariation(type) {
     formData.append('model', 'gpt-image-1');
     formData.append('prompt', prompt);
     formData.append('n', '1');
-    formData.append('size', '1024x1024');
+    formData.append('size', '1536x1536');
 
     // 원본 사진 파일 사용
     if (selectedFile) {
@@ -1567,7 +1562,7 @@ async function convert() {
     formData.append('model', 'gpt-image-1');
     formData.append('prompt', getModePrompt());
     formData.append('n', '1');
-    formData.append('size', '1024x1024');
+    formData.append('size', '1536x1536');
     formData.append('image', selectedFile);
     var res = await fetch('https://api.openai.com/v1/images/edits', {
       method: 'POST', headers: {'Authorization': 'Bearer ' + apiKey}, body: formData
