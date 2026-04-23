@@ -138,7 +138,71 @@ canvas#lineLayer { position: absolute; inset: 0; width: 100%; height: 100%; poin
   from { transform: translateY(0px) scale(0.8); opacity:0.6; }
   to { transform: translateY(-18px) scale(1.2); opacity:1; }
 }
-/* ===== 스플래시 끝 ===== */</style>
+/* ===== 스플래시 끝 ===== */
+/* ===== 특수 펜 스타일 ===== */
+.special-pen-item {
+  cursor: pointer;
+  width: 62px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), filter 0.18s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  font-size: 20px;
+}
+.special-pen-item:hover { transform: scale(1.08) translateX(-3px); }
+.special-pen-item.selected {
+  transform: scale(1.18) translateX(-10px);
+  filter: drop-shadow(2px 3px 6px rgba(0,0,0,0.4));
+  border: 2px solid rgba(255,255,255,0.8);
+}
+
+/* 무지개 펜 */
+.pen-rainbow {
+  background: linear-gradient(135deg,
+    #FF0000 0%, #FF7700 16%, #FFFF00 33%,
+    #00CC00 50%, #0000FF 66%, #8B00FF 83%, #FF0090 100%);
+}
+/* 글리터 펜 */
+.pen-glitter {
+  background: linear-gradient(135deg, #FFD700, #FF69B4, #87CEEB, #98FB98, #DDA0DD);
+  animation: glitterShimmer 1.5s ease-in-out infinite alternate;
+}
+@keyframes glitterShimmer {
+  0% { filter: brightness(1) saturate(1); }
+  100% { filter: brightness(1.3) saturate(1.5); }
+}
+/* 네온 펜 */
+.pen-neon {
+  background: #1a1a2e;
+  border: 2px solid #00FF88 !important;
+  box-shadow: 0 0 8px #00FF88, inset 0 0 8px rgba(0,255,136,0.2);
+}
+/* 파스텔 펜 */
+.pen-pastel {
+  background: linear-gradient(135deg, #FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #E8BAFF);
+}
+/* 불꽃 펜 */
+.pen-fire {
+  background: linear-gradient(180deg, #FFD700 0%, #FF8C00 40%, #FF4500 70%, #8B0000 100%);
+}
+
+/* 팔레트 구분선·라벨 */
+.palette-section-label {
+  font-size: 9px;
+  color: #C4728A;
+  text-align: center;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.palette-divider { height: 1px; background: #FFD6E7; margin: 4px 4px; }
+/* ===== 특수 펜 스타일 끝 ===== */
+
+</style>
 </head>
 <body>
 <div class="toast" id="toastMsg"></div>
@@ -270,7 +334,69 @@ canvas#lineLayer { position: absolute; inset: 0; width: 100%; height: 100%; poin
           </div>
         </div>
         <div class="crayon-palette" id="crayonPalette"></div>
-      </div>
+      /* ===== 특수 펜 스타일 ===== */
+.special-pen-item {
+  cursor: pointer;
+  width: 62px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), filter 0.18s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  font-size: 20px;
+}
+.special-pen-item:hover { transform: scale(1.08) translateX(-3px); }
+.special-pen-item.selected {
+  transform: scale(1.18) translateX(-10px);
+  filter: drop-shadow(2px 3px 6px rgba(0,0,0,0.4));
+  border: 2px solid rgba(255,255,255,0.8);
+}
+
+/* 무지개 펜 */
+.pen-rainbow {
+  background: linear-gradient(135deg,
+    #FF0000 0%, #FF7700 16%, #FFFF00 33%,
+    #00CC00 50%, #0000FF 66%, #8B00FF 83%, #FF0090 100%);
+}
+/* 글리터 펜 */
+.pen-glitter {
+  background: linear-gradient(135deg, #FFD700, #FF69B4, #87CEEB, #98FB98, #DDA0DD);
+  animation: glitterShimmer 1.5s ease-in-out infinite alternate;
+}
+@keyframes glitterShimmer {
+  0% { filter: brightness(1) saturate(1); }
+  100% { filter: brightness(1.3) saturate(1.5); }
+}
+/* 네온 펜 */
+.pen-neon {
+  background: #1a1a2e;
+  border: 2px solid #00FF88 !important;
+  box-shadow: 0 0 8px #00FF88, inset 0 0 8px rgba(0,255,136,0.2);
+}
+/* 파스텔 펜 */
+.pen-pastel {
+  background: linear-gradient(135deg, #FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #E8BAFF);
+}
+/* 불꽃 펜 */
+.pen-fire {
+  background: linear-gradient(180deg, #FFD700 0%, #FF8C00 40%, #FF4500 70%, #8B0000 100%);
+}
+
+/* 팔레트 구분선·라벨 */
+.palette-section-label {
+  font-size: 9px;
+  color: #C4728A;
+  text-align: center;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.palette-divider { height: 1px; background: #FFD6E7; margin: 4px 4px; }
+/* ===== 특수 펜 스타일 끝 ===== */
+</div>
     </div>
   </div>
 
@@ -716,7 +842,7 @@ function drawStroke(x1, y1, x2, y2) {
 
   var profile = getBrushProfile();
   ctx.save();
-  ctx.strokeStyle = currentColor;
+  ctx.strokeStyle = getDrawColor(currentColor);
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.globalAlpha = profile.alpha;
@@ -729,6 +855,7 @@ function drawStroke(x1, y1, x2, y2) {
   ctx.moveTo(x1, y1);
   ctx.lineTo(x2, y2);
   ctx.stroke();
+drawGlitterEffect(ctx, x2, y2, profile.lineWidth);
   ctx.restore();
 }
 
@@ -1904,5 +2031,84 @@ const CP_Sticker = (() => {
 
 })();
 document.body.appendChild(muteBtn);
+// ===== 특수 펜 기능 =====
+const SPECIAL_PEN_COLORS = {
+  rainbow: ['#FF0000','#FF4400','#FF8800','#FFCC00','#FFFF00',
+            '#88FF00','#00FF00','#00FFCC','#00CCFF','#0088FF',
+            '#0000FF','#4400FF','#8800FF','#CC00FF','#FF00CC','#FF0088'],
+  glitter: ['#FFD700','#FF69B4','#87CEEB','#98FB98','#DDA0DD',
+            '#FF7F50','#00CED1','#FF6347','#7B68EE','#20B2AA'],
+  neon:    ['#00FF00','#00FFFF','#FF00FF','#FFFF00','#FF6600',
+            '#00FF88','#FF0088','#88FF00','#0088FF','#FF8800'],
+  pastel:  ['#FFB3BA','#FFDFBA','#FFFFBA','#BAFFC9','#BAE1FF',
+            '#E8BAFF','#FFBAFF','#FFBAF0'],
+  fire:    ['#FFD700','#FFA500','#FF8C00','#FF4500','#FF2200',
+            '#CC1100','#991100']
+};
+
+let currentSpecialPen = null;
+let rainbowColorIndex  = 0;
+let specialStepCounter = 0;
+
+// 원본의 selectColor 함수 뒤에 아래 함수를 추가
+function selectSpecialPen(penType) {
+  // 기존 일반 크레용 선택 해제
+  document.querySelectorAll('.crayon-item').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.special-pen-item').forEach(el => el.classList.remove('selected'));
+
+  currentSpecialPen  = penType;
+  rainbowColorIndex  = 0;
+  specialStepCounter = 0;
+
+  document.getElementById('pen-' + penType).classList.add('selected');
+
+  // 도구를 붓 모드로 전환 (원본의 activeTool 변수명에 맞게 수정 필요)
+  // 원본 코드에서 붓 버튼 클릭 방식 그대로 사용:
+  document.getElementById('brushToolBtn') &&
+    document.getElementById('brushToolBtn').click();
+}
+
+// 원본의 그리기 함수(mousemove / draw 계열) 내부에서
+// 색을 결정하는 부분을 아래 함수로 교체하거나 앞에 체크 추가:
+function getDrawColor(baseColor) {
+  if (!currentSpecialPen) return baseColor; // 일반 펜이면 그대로
+
+  const palette = SPECIAL_PEN_COLORS[currentSpecialPen];
+  rainbowColorIndex = (rainbowColorIndex + 1) % palette.length;
+  return palette[rainbowColorIndex];
+}
+
+// 글리터 펜의 반짝이 효과 (ctx = 캔버스 컨텍스트, x, y = 현재 좌표)
+function drawGlitterEffect(ctx, x, y, brushSize) {
+  if (currentSpecialPen !== 'glitter') return;
+  if (Math.random() > 0.6) {
+    const palette = SPECIAL_PEN_COLORS.glitter;
+    const c = palette[Math.floor(Math.random() * palette.length)];
+    ctx.save();
+    ctx.fillStyle = c;
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath();
+    ctx.arc(
+      x + (Math.random() - 0.5) * brushSize * 2,
+      y + (Math.random() - 0.5) * brushSize * 2,
+      Math.random() * 3 + 1, 0, Math.PI * 2
+    );
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+// 네온 펜 글로우 ON/OFF 헬퍼
+function applyNeonGlow(ctx, color) {
+  if (currentSpecialPen === 'neon') {
+    ctx.shadowBlur  = 15;
+    ctx.shadowColor = color;
+  }
+}
+function clearNeonGlow(ctx) {
+  ctx.shadowBlur  = 0;
+  ctx.shadowColor = 'transparent';
+}
+// ===== 특수 펜 기능 끝 =====
 </script>
 </html>
