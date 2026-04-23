@@ -334,8 +334,16 @@ canvas#lineLayer { position: absolute; inset: 0; width: 100%; height: 100%; poin
             <button class="undo-btn" onclick="undo()">↩️ 되돌리기</button>
           </div>
         </div>
-        <div class="crayon-palette" id="crayonPalette"></div>
-     
+        </div>
+<div class="crayon-palette" id="crayonPalette">
+  <div class="palette-section-label">✨ 특수</div>
+  <div class="special-pen-item pen-rainbow" id="pen-rainbow" onclick="selectSpecialPen('rainbow')" title="🌈 무지개 펜">🌈</div>
+  <div class="special-pen-item pen-glitter" id="pen-glitter" onclick="selectSpecialPen('glitter')" title="✨ 글리터 펜">✨</div>
+  <div class="special-pen-item pen-neon" id="pen-neon" onclick="selectSpecialPen('neon')" title="💫 네온 펜">💫</div>
+  <div class="special-pen-item pen-pastel" id="pen-pastel" onclick="selectSpecialPen('pastel')" title="🎀 파스텔 펜">🎀</div>
+  <div class="special-pen-item pen-fire" id="pen-fire" onclick="selectSpecialPen('fire')" title="🔥 불꽃 펜">🔥</div>
+  <div class="palette-divider"></div>
+  <div class="palette-section-label">🖍️ 크레용</div>
 </div>
     </div>
   </div>
