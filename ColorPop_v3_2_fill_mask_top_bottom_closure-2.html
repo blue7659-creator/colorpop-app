@@ -1579,7 +1579,7 @@ async function convertWithGPT4o(apiKey) {
     return 'data:image/png;base64,' + imageData.result;
   }
   throw new Error('이미지 생성 결과를 찾을 수 없어요');
-
+  }
 async function convertWithDalle(apiKey) {
   var base64Data = originalDataUrl.split(',')[1];
   setStep('사진을 살펴보는 중이에요...');
