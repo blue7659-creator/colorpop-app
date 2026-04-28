@@ -1617,10 +1617,28 @@ function startLoadingTips(){
 }
 function stopLoadingTips(){
   if (loadingTipTimer){ clearInterval(loadingTipTimer); loadingTipTimer = null; }
+async function convertWithDalle(apiKey) {
+  var base64Data = originalDataUrl.split(',')[1];
+  setStep('사진을 살펴보는 중이에요...');
+  var aRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST', headers: {'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+    body: JSON.stringify({model:'gpt-4o',messages:[{role:'user',content:[
+      {type:'image_url',image_url:{url:'data:image/jpeg;base64,'+base64Data}},
+      {type:'text',text:getAnalysisPrompt()}
+    ]}],max_tokens:200})
+  });
+  var desc = (await aRes.json()).choices[0].message.content.trim();
+  setStep('색칠하기 쉽게 다듬는 중이에요...');
+  var dRes = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST', headers: {'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+    body: JSON.stringify({model:'dall-e-3', prompt:getGenerationPrompt(desc), n:1, size:'1024x1024', response_format:'b64_json'})
+  });
+  var dData = await dRes.json();
+  if (!dRes.ok) throw new Error(dData.error ? dData.error.message : 'Error');
+  return 'data:image/png;base64,' + dData.data[0].b64_json;
 }
 function setStep(msg) { document.getElementById('loadingStep').textContent = msg; }
 function showError(msg) { var b = document.getElementById('errorBox'); b.textContent = msg; b.classList.add('visible'); }
-
 </script>
 
 <script>
