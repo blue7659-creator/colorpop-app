@@ -1386,18 +1386,17 @@ function getModePrompt() {
 
 function getAnalysisPrompt() {
   if (uploadMode === 'object') {
-    return 'Describe the main subject in this photo for a children\'s coloring book. Include what it is, key shape, key features, accessories if any, and pose. Keep it simple and brief. English only. Max 60 words.';
+    return 'Look at this photo carefully. Describe EXACTLY what you see: (1) What the subject is, (2) its EXACT pose and orientation - which direction it faces, how limbs/parts are positioned, whether sitting/standing/lying, (3) key visual features like colors, patterns, accessories, (4) overall silhouette shape. Be precise about pose. English only. Max 80 words.';
   }
-  return 'Describe the person in this photo for a children\'s coloring book. Include age group, hairstyle, face shape, glasses or accessories, clothing silhouette, expression, and pose. Focus on recognizable features. Keep it simple and brief. English only. Max 60 words.';
+  return 'Describe the person in this photo for a children\'s coloring book. Include age group, hairstyle and hair part direction, face shape, glasses or accessories, clothing silhouette, expression, and pose/angle of the photo. Focus on recognizable features that make this person unique. Keep it simple and brief. English only. Max 60 words.';
 }
 
 function getGenerationPrompt(desc) {
   if (uploadMode === 'object') {
-    return 'Cute cartoon coloring book page for young children. Subject: ' + desc + '. RULES: Pure white background. Bold black outlines only. NO color fills. Thick simple lines. Large easy coloring areas. Keep it adorable, playful, centered, and simplified. Keep the full subject visible and leave a little extra white space above the head or top accessory. Do not crop the top. Remove complex background.';
+    return 'Children\'s coloring book line art. Draw EXACTLY this subject with EXACTLY this pose: ' + desc + '. CRITICAL RULES: (1) Keep the EXACT same pose, orientation, and position as described - do NOT change the pose, (2) Pure white background, (3) Bold clean black outlines only - NO color fills, NO shading, (4) Thick simple lines easy for children to color, (5) Large open areas for coloring, (6) Cute and simplified but RECOGNIZABLE as the original subject, (7) Full subject visible, centered, with white margin around. Do not invent a new pose.';
   }
-  return 'Cute person coloring book page for young children. Character: ' + desc + '. RULES: Preserve recognizable hairstyle, hair part direction, face shape, smile, dimples, visible beauty marks, jewelry, and clothing silhouette so the person still feels like the original photo. Preserve glasses only if clearly present in the original photo. If the original photo has no glasses, do not add glasses. Do not invent accessories or props. Pure white background. Do not add any border or rectangular frame. Bold black outlines only. NO color fills. Thick simple lines. Large easy coloring areas. Keep generous white margins and a centered half-body portrait. Child-friendly and centered.';
+  return 'Children\'s coloring book portrait. Character: ' + desc + '. CRITICAL RULES: (1) Preserve the EXACT hairstyle, hair part direction, face shape, smile, and any distinctive features like dimples or beauty marks, (2) Keep clothing silhouette and any accessories exactly as described, (3) Add glasses ONLY if explicitly mentioned, (4) Pure white background - NO border or frame, (5) Bold black outlines only - NO color fills, (6) Thick simple lines, large easy coloring areas, (7) Centered half-body portrait with generous white margins, (8) Child-friendly cute style but still recognizable as the original person.';
 }
-
 
 function cropPersonImage(img, maxSize) {
   var srcW = img.naturalWidth || img.width;
