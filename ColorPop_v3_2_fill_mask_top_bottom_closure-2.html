@@ -1579,23 +1579,6 @@ async function convertWithGPT4o(apiKey) {
     return 'data:image/png;base64,' + imageData.result;
   }
   throw new Error('이미지 생성 결과를 찾을 수 없어요');
-} else {
-      resultUrl = await convertWithDalle(apiKey);
-    }
-    document.getElementById('loading').classList.remove('visible');
-    stopLoadingTips();
-    stopLoadingTips();
-    document.getElementById('convertBtn').disabled = false;
-    playTadan();
-    var now = new Date();
-    saveThumbnail(resultUrl, now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0'));
-    showColoring(resultUrl);
-  } catch(err) {
-    showError('오류: ' + err.message);
-    document.getElementById('convertBtn').disabled = false;
-    document.getElementById('loading').classList.remove('visible');
-  }
-}
 
 async function convertWithDalle(apiKey) {
   var base64Data = originalDataUrl.split(',')[1];
