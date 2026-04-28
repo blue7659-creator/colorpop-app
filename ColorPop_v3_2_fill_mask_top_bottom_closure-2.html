@@ -1379,9 +1379,9 @@ function setUploadMode(mode) {
 
 function getModePrompt() {
   if (uploadMode === 'object') {
-    return "Convert this exact photo into a children's coloring book line drawing. CRITICAL: Keep the EXACT same pose, position, and orientation as in the photo - do NOT change the pose at all. The subject must be facing the same direction and in the same position. Trace the silhouette and main shapes faithfully. Simplify details into clean bold outlines. Pure white background. Black outlines ONLY - zero color fills, zero shading, zero gray tones. Thick closed lines. Large open areas for coloring. Remove background. Keep the full subject visible with white space around it. The result must be instantly recognizable as the same subject from the original photo.";
+    return "Please look at this photo carefully and convert it into a children's coloring book line drawing. Keep the EXACT same pose, position, and orientation as shown in the photo. Trace the actual silhouette and shapes you see. Use bold black outlines only on a pure white background. NO color fills anywhere - every area including hair must be white inside with black outline only. NO solid black fills. Thick clean closed lines. Large simple open areas for coloring. Remove the background. Keep the full subject visible and centered.";
   }
-  return "Convert this exact person photo into a children's coloring book line drawing. CRITICAL: Keep the EXACT same pose, head angle, and framing as the original photo. Faithfully trace the real hairstyle, hair part direction, face shape, and facial features. Preserve any distinctive features like smile, dimples, beauty marks. Keep clothing silhouette and accessories exactly as shown. Preserve glasses ONLY if worn in the photo. Do NOT invent any accessories or change the pose. Pure white background - NO border or frame of any kind. Black outlines ONLY - zero color fills. Thick clean closed outlines. Large simple areas for coloring. Centered portrait with generous white margins. Child-friendly but still recognizable as the real person.";
+  return "Please look at this photo carefully and convert it into a children's coloring book line drawing. Keep the EXACT same pose, head angle, and framing as the original photo. Faithfully trace the real hairstyle, face shape, and facial features you see. Every area including hair must be white inside with black outline only - NO solid black fills anywhere. Keep clothing and accessories exactly as shown. NO glasses unless worn in the photo. Pure white background with NO border or frame. Bold black outlines only. Thick clean lines. Large open areas for coloring. Centered portrait with white margins.";
 }
 function getAnalysisPrompt() {
   if (uploadMode === 'object') {
@@ -1523,20 +1523,63 @@ async function convert() {
   document.getElementById('errorBox').classList.remove('visible');
   try {
     setStep('유니콘이 도안을 그리고 있어요 ✨');
-    var formData = new FormData();
-    formData.append('model', 'gpt-image-2');
-    formData.append('prompt', getModePrompt());
-    formData.append('n', '1');
-    formData.append('size', '1024x1024');
-    formData.append('image', selectedFile);
-    var res = await fetch('https://api.openai.com/v1/images/edits', {
-      method: 'POST', headers: {'Authorization': 'Bearer ' + apiKey}, body: formData
-    });
-    var data = await res.json();
-    var resultUrl;
-    if (res.ok) {
-      resultUrl = 'data:image/png;base64,' + data.data[0].b64_json;
-    } else {
+    var resultUrl = await convertWithGPT4o(apiKey);
+    document.getElementById('loading').classList.remove('visible');
+    stopLoadingTips();
+    document.getElementById('convertBtn').disabled = false;
+    playTadan();
+    var now = new Date();
+    saveThumbnail(resultUrl, now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0'));
+    showColoring(resultUrl);
+  } catch(err) {
+    showError('오류: ' + err.message);
+    document.getElementById('convertBtn').disabled = false;
+    document.getElementById('loading').classList.remove('visible');
+    stopLoadingTips();
+  }
+}
+async function convertWithGPT4o(apiKey) {
+  var base64Data = originalDataUrl.split(',')[1];
+  var mimeType = originalDataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
+  setStep('사진을 살펴보는 중이에요...');
+  var res = await fetch('https://api.openai.com/v1/responses', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey},
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      input: [
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'input_image',
+              image_url: 'data:' + mimeType + ';base64,' + base64Data
+            },
+            {
+              type: 'input_text',
+              text: getModePrompt()
+            }
+          ]
+        }
+      ],
+      tools: [
+        {
+          type: 'image_generation',
+          size: '1024x1024',
+          quality: 'medium'
+        }
+      ]
+    })
+  });
+  var data = await res.json();
+  if (!res.ok) throw new Error(data.error ? data.error.message : '변환 실패');
+  setStep('색칠 도안 완성 중이에요...');
+  var imageData = data.output && data.output.find(function(o){ return o.type === 'image_generation_call'; });
+  if (imageData && imageData.result) {
+    return 'data:image/png;base64,' + imageData.result;
+  }
+  throw new Error('이미지 생성 결과를 찾을 수 없어요');
+} else {
       resultUrl = await convertWithDalle(apiKey);
     }
     document.getElementById('loading').classList.remove('visible');
