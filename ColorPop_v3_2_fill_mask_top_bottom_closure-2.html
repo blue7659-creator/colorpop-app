@@ -1119,10 +1119,10 @@ async function makeVariation(type) {
 
     // gpt-image-1로 원본 이미지 기반 편집 (캐릭터 유지)
     var formData = new FormData();
-    formData.append('model', 'gpt-image-1');
+    formData.append('model', 'gpt-image-2');
     formData.append('prompt', prompt);
     formData.append('n', '1');
-    formData.append('size', '1536x1536');
+    formData.append('size', '1024x1024');
 
     // 원본 사진 파일 사용
     if (selectedFile) {
@@ -1524,10 +1524,10 @@ async function convert() {
   try {
     setStep('유니콘이 도안을 그리고 있어요 ✨');
     var formData = new FormData();
-    formData.append('model', 'gpt-image-1');
+    formData.append('model', 'gpt-image-2');
     formData.append('prompt', getModePrompt());
     formData.append('n', '1');
-    formData.append('size', '1536x1536');
+    formData.append('size', '1024x1024');
     formData.append('image', selectedFile);
     var res = await fetch('https://api.openai.com/v1/images/edits', {
       method: 'POST', headers: {'Authorization': 'Bearer ' + apiKey}, body: formData
