@@ -1547,45 +1547,61 @@ async function convertWithGPT4o(apiKey) {
   var base64Data = originalDataUrl.split(',')[1];
   var mimeType = originalDataUrl.split(';')[0].split(':')[1] || 'image/jpeg';
   setStep('사진을 살펴보는 중이에요...');
-  var aRes = await fetch('https://api.openai.com/v1/chat/completions', {
+  var res = await fetch('https://api.openai.com/v1/responses', {
     method: 'POST',
     headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey},
     body: JSON.stringify({
       model: 'gpt-4o',
-      messages: [{
-        role: 'user',
-        content: [
-          {
-            type: 'image_url',
-            image_url: { url: 'data:' + mimeType + ';base64,' + base64Data }
-          },
-          {
-            type: 'text',
-            text: getAnalysisPrompt()
-          }
-        ]
-      }],
-      max_tokens: 300
+      input: [
+        {
+          role: 'user',
+          content: [
+            { type: 'input_image', image_url: 'data:' + mimeType + ';base64,' + base64Data },
+            { type: 'input_text', text: getModePrompt() }
+          ]
+        }
+      ],
+      tools: [{ type: 'image_generation', size: '1024x1024', quality: 'high' }]
     })
   });
-  var aData = await aRes.json();
-  if (!aRes.ok) throw new Error(aData.error ? aData.error.message : '분석 실패');
-  var desc = aData.choices[0].message.content.trim();
-  setStep('색칠 도안 만드는 중이에요...');
-  var dRes = await fetch('https://api.openai.com/v1/images/generations', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey},
-    body: JSON.stringify({
-      model: 'dall-e-3',
-      prompt: getGenerationPrompt(desc),
-      n: 1,
-      size: '1024x1024',
-      response_format: 'b64_json'
-    })
-  });
-  var dData = await dRes.json();
-  if (!dRes.ok) throw new Error(dData.error ? dData.error.message : '이미지 생성 실패');
-  return 'data:image/png;base64,' + dData.data[0].b64_json;
+  var data = await res.json();
+  if (!res.ok) {
+    // Responses API 실패시 DALL-E 3 방식으로 대체
+    setStep('다른 방법으로 시도 중이에요...');
+    var aRes = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey},
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image_url', image_url: { url: 'data:' + mimeType + ';base64,' + base64Data } },
+            { type: 'text', text: getAnalysisPrompt() }
+          ]
+        }],
+        max_tokens: 300
+      })
+    });
+    var aData = await aRes.json();
+    if (!aRes.ok) throw new Error(aData.error ? aData.error.message : '분석 실패');
+    var desc = aData.choices[0].message.content.trim();
+    setStep('색칠 도안 만드는 중이에요...');
+    var dRes = await fetch('https://api.openai.com/v1/images/generations', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+apiKey},
+      body: JSON.stringify({ model: 'dall-e-3', prompt: getGenerationPrompt(desc), n: 1, size: '1024x1024', response_format: 'b64_json' })
+    });
+    var dData = await dRes.json();
+    if (!dRes.ok) throw new Error(dData.error ? dData.error.message : '이미지 생성 실패');
+    return 'data:image/png;base64,' + dData.data[0].b64_json;
+  }
+  setStep('색칠 도안 완성 중이에요...');
+  var imageData = data.output && data.output.find(function(o){ return o.type === 'image_generation_call'; });
+  if (imageData && imageData.result) {
+    return 'data:image/png;base64,' + imageData.result;
+  }
+  throw new Error('이미지 생성 결과를 찾을 수 없어요');
 }
 
 const loadingTips = [
