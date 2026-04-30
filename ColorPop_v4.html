@@ -76,8 +76,8 @@ input[type=file] { display: none; }
 .save-btn { background: #FF85A8; border: none; border-radius: 50px; padding: 8px 18px; font-size: 13px; color: #fff; cursor: pointer; font-weight: 700; margin-left: auto; }
 .canvas-box { background: #fff; border-radius: 20px; border: 1.5px solid #FFD6E7; flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 canvas { outline: none !important; -webkit-tap-highlight-color: transparent; }
-canvas#colorLayer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 100%; max-height: 100%; width: auto !important; height: auto !important; cursor: crosshair; touch-action: none; outline: none !important; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; -webkit-focus-ring-color: transparent; }
-canvas#lineLayer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); max-width: 100%; max-height: 100%; width: auto !important; height: auto !important; pointer-events: none; outline: none !important; user-select: none; -webkit-user-select: none; }
+canvas#colorLayer { position: absolute; inset: 0; width: 100% !important; height: 100% !important; object-fit: contain; cursor: crosshair; touch-action: none; outline: none !important; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; -webkit-focus-ring-color: transparent; }
+canvas#lineLayer { position: absolute; inset: 0; width: 100% !important; height: 100% !important; object-fit: contain; pointer-events: none; outline: none !important; user-select: none; -webkit-user-select: none; }
 .tool-bar { background: #fff; border-radius: 50px; border: 1.5px solid #FFD6E7; padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .tool-btn { background: #FFF0F5; border: 1.5px solid #FFD6E7; border-radius: 50px; padding: 7px 12px; font-size: 12px; color: #8B3A52; cursor: pointer; font-weight: 600; transition: all 0.15s; white-space: nowrap; }
 .tool-btn.active { background: #FF85A8; color: #fff; border-color: #FF85A8; }
@@ -1395,9 +1395,9 @@ function getAnalysisPrompt() {
 
 function getGenerationPrompt(desc) {
   if (uploadMode === 'object') {
-    return 'Children\'s coloring book line art. Subject: ' + desc + '. CRITICAL RULES: (1) Keep the EXACT same pose and orientation as described - do NOT change the pose at all, (2) Pure white background, (3) Bold black outlines ONLY - NO color fills, NO shading, NO gray tones, NO solid black fills anywhere, (4) Every area including hair must be white inside with black outline only, (5) Thick clean closed lines, (6) Large simple open areas for coloring, (7) Remove background, (8) Full subject visible and centered, (9) Cute simplified style but instantly recognizable as the original subject.';
+    return 'ONE single children coloring book page. Cute cartoon version of: ' + desc + '. RULES: ONE image only - not two, not side by side. Pure white background. Bold black outlines ONLY - zero color fills, zero shading, zero gray, zero solid black fills. Hair and all areas must be white inside with outline only. Thick clean lines. Large open coloring areas. Centered and complete.';
   }
-  return 'Children\'s coloring book portrait. Character: ' + desc + '. CRITICAL RULES: (1) Keep the EXACT same pose, head angle, and framing as described, (2) Faithfully preserve the real hairstyle and hair part direction, (3) Every area including hair must be white inside with black outline only - NO solid black fills anywhere, (4) Keep clothing and accessories exactly as described, (5) Add glasses ONLY if mentioned, (6) Pure white background - NO border or frame, (7) Bold black outlines only - NO color fills, (8) Thick clean lines with large coloring areas, (9) Centered portrait with white margins, (10) Child-friendly but recognizable as the real person.';
+  return 'ONE single children coloring book page showing ONE person only. Cute cartoon/caricature of: ' + desc + '. RULES: ONE image only - absolutely not two images, not side by side comparison. Pure white background - no border. Bold black outlines ONLY - zero color fills, zero shading, zero gray tones, zero solid black fills anywhere including hair. All areas white inside with outline only. Thick clean closed lines. Large open coloring areas. Centered portrait.';
 }
 
 
