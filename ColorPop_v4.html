@@ -76,8 +76,8 @@ input[type=file] { display: none; }
 .save-btn { background: #FF85A8; border: none; border-radius: 50px; padding: 8px 18px; font-size: 13px; color: #fff; cursor: pointer; font-weight: 700; margin-left: auto; }
 .canvas-box { background: #fff; border-radius: 20px; border: 1.5px solid #FFD6E7; flex: 1; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 canvas { outline: none !important; -webkit-tap-highlight-color: transparent; }
-canvas#colorLayer { position: absolute; inset: 0; width: 100% !important; height: 100% !important; object-fit: contain; cursor: crosshair; touch-action: none; outline: none !important; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; -webkit-focus-ring-color: transparent; }
-canvas#lineLayer { position: absolute; inset: 0; width: 100% !important; height: 100% !important; object-fit: contain; pointer-events: none; outline: none !important; user-select: none; -webkit-user-select: none; }
+canvas#colorLayer { position: absolute; inset: 0; width: 100% !important; height: 100% !important; cursor: crosshair; touch-action: none; outline: none !important; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; -webkit-focus-ring-color: transparent; }
+canvas#lineLayer { position: absolute; inset: 0; width: 100% !important; height: 100% !important; pointer-events: none; outline: none !important; user-select: none; -webkit-user-select: none; }
 .tool-bar { background: #fff; border-radius: 50px; border: 1.5px solid #FFD6E7; padding: 8px 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .tool-btn { background: #FFF0F5; border: 1.5px solid #FFD6E7; border-radius: 50px; padding: 7px 12px; font-size: 12px; color: #8B3A52; cursor: pointer; font-weight: 600; transition: all 0.15s; white-space: nowrap; }
 .tool-btn.active { background: #FF85A8; color: #fff; border-color: #FF85A8; }
@@ -546,13 +546,13 @@ function normalizeLineArtLayout(imgData, w, h, modeType, userScalePercent, userO
   var octx = out.getContext('2d');
   octx.clearRect(0, 0, w, h);
 
-  var safeTop = modeType === 'person' ? Math.round(h * 0.12) : Math.round(h * 0.12);
-  var safeBottom = modeType === 'person' ? Math.round(h * 0.13) : Math.round(h * 0.11);
-  var safeSide = modeType === 'person' ? Math.round(w * 0.17) : Math.round(w * 0.14);
+  var safeTop = Math.round(h * 0.04);
+  var safeBottom = Math.round(h * 0.04);
+  var safeSide = Math.round(w * 0.04);
   var boxW = w - safeSide * 2;
   var boxH = h - safeTop - safeBottom;
-  var baseScale = Math.min(boxW / trimW, boxH / trimH) * (modeType === 'person' ? 0.88 : 0.91);
-  var customScale = typeof userScalePercent === 'number' ? userScalePercent / 82 : (100 / 82);
+  var baseScale = Math.min(boxW / trimW, boxH / trimH) * 0.92;
+  var customScale = typeof userScalePercent === 'number' ? userScalePercent / 100 : 1.0;
   var scale = baseScale * customScale;
   var drawW = Math.round(trimW * scale);
   var drawH = Math.round(trimH * scale);
