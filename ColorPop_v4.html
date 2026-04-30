@@ -87,7 +87,7 @@ canvas#lineLayer { position: absolute; inset: 0; width: 100%; height: 100%; poin
 .artwork-controls .brush-wrap { gap:4px; }
 .layout-reset-btn { background:#FFF8FB; border:1.5px solid #FFD6E7; border-radius:50px; padding:7px 12px; font-size:12px; color:#8B3A52; cursor:pointer; font-weight:600; }
 .undo-btn { background: #FFF0F5; border: 1.5px solid #FFD6E7; border-radius: 50px; padding: 7px 12px; font-size: 12px; color: #8B3A52; cursor: pointer; margin-left: auto; }
-.crayon-palette { width: 76px; flex-shrink: 0; background: #FFF0EC; border-radius: 20px; border: 1.5px solid #FFD6E7; padding: 10px 6px; display: flex; flex-direction: column; gap: 5px; overflow-y: auto; overflow-x: visible; height: calc(100vh - 40px); align-self: flex-start; }.crayon-item { cursor: pointer; width: 62px; height: 40px; flex-shrink: 0; border-radius: 8px; transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), filter 0.18s; position: relative; }
+.crayon-palette { width: 76px; flex-shrink: 0; background: #FFF0EC; border-radius: 20px; border: 1.5px solid #FFD6E7; padding: 6px 6px; display: flex; flex-direction: column; gap: 3px; overflow-y: auto; overflow-x: visible; height: calc(100vh - 40px); align-self: flex-start; }.crayon-item { cursor: pointer; width: 62px; height: 32px; flex-shrink: 0; border-radius: 8px; transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), filter 0.18s; position: relative; }
 .crayon-item:hover { transform: scale(1.08) translateX(-3px); }
 .crayon-item.selected { transform: scale(1.18) translateX(-10px); filter: drop-shadow(2px 2px 4px rgba(139,58,82,0.35)); outline: none; }
 .crayon-item svg { width: 100%; height: 100%; }
@@ -272,10 +272,9 @@ canvas#lineLayer { position: absolute; inset: 0; width: 100%; height: 100%; poin
             <button class="undo-btn" onclick="undo()">↩️ 되돌리기</button>
           </div>
         </div>
-        </div>
-     <div class="crayon-palette" id="crayonPalette"></div>
+        <div class="crayon-palette" id="crayonPalette"></div>
+      </div>
     </div>
-  </div>
 
   </div>
 
