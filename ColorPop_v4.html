@@ -549,10 +549,10 @@ function normalizeLineArtLayout(imgData, w, h, modeType, userScalePercent, userO
 
   var safeTop = Math.round(h * 0.04);
   var safeBottom = Math.round(h * 0.04);
-  var safeSide = Math.round(w * 0.14);
+  var safeSide = Math.round(w * 0.09);
   var boxW = w - safeSide * 2;
   var boxH = h - safeTop - safeBottom;
-  var baseScale = Math.min(boxW / trimW, boxH / trimH) * 0.92;
+  var baseScale = Math.min(boxW / trimW, boxH / trimH) * 1.05;
   var customScale = typeof userScalePercent === 'number' ? userScalePercent / 100 : 1.0;
   var scale = baseScale * customScale;
   var drawW = Math.round(trimW * scale);
