@@ -26,8 +26,7 @@ body { background: #FFF0F5; font-family: -apple-system, BlinkMacSystemFont, sans
 .api-box input:focus { border-color: #FF85A8; }
 .api-save-btn { background: #FF85A8; border: none; border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 700; color: #fff; cursor: pointer; }
 .api-label { font-size: 12px; color: #C4728A; white-space: nowrap; }
-.saved-box { background: #fff; border-radius: 16px; border: 1.5px solid #FFD6E7; padding: 14px 16px; }
-.saved-title { font-size: 13px; font-weight: 700; color: #8B3A52; margin-bottom: 10px; }
+.saved-box { background: rgba(255,255,255,0.7); border-radius: 16px; border: 1.5px solid #FFD6E7; padding: 14px 16px; }.saved-title { font-size: 13px; font-weight: 700; color: #8B3A52; margin-bottom: 10px; }
 .saved-grid { display: flex; gap: 8px; flex-wrap: wrap; }
 .saved-item { position: relative; cursor: pointer; border-radius: 10px; overflow: hidden; border: 2px solid #FFD6E7; transition: border-color 0.15s; }
 .saved-item:hover { border-color: #FF85A8; }
@@ -183,7 +182,7 @@ canvas#lineLayer { position: absolute; inset: 0; width: 100% !important; height:
   </div>
 
   <div class="main">
-    <div class="screen active" id="homeScreen" style="background-image:url('ChatGPT Image 2026년 5월 4일 오후 08_30_48.png'); background-size:cover; background-position:top center; background-repeat:no-repeat; background-attachment:fixed;d-repeat:no-repeat;">
+    <div class="screen active" id="homeScreen" style="background-image:url('ChatGPT Image 2026년 5월 4일 오후 08_30_48.png'); background-size:cover; background-position:top center; background-repeat:no-repeat;">
       <div class="api-box">
         <span class="api-label">🔑 API 키</span>
         <input type="password" id="apiKey" placeholder="sk-proj-... 여기에 붙여넣기">
