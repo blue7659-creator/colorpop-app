@@ -192,9 +192,7 @@ canvas#lineLayer { position: absolute; inset: 0; width: 100% !important; height:
     </div>
     <input type="file" id="fileInput" accept="image/*,.heic,.heif" onchange="onFileSelect(event)" style="display:none;">
     <div style="display:flex; gap:20px; width:80%; margin:0 auto; margin-top:350px; justify-content:center;">
-      <button class="upload-mode-btn active" id="modePersonBtn" type="button" onclick="triggerUploadMode('person')" style="background:rgba(255,255,255,0.85); border:none; border-radius:20px; padding:20px; width:45%; cursor:pointer;">
-        <div class="upload-mode-title">👧 사람 사진 컬러링</div>
-        <div class="upload-mode-desc">가족, 친구, 셀카처럼 사람의 특징을 더 잘 살려서 귀엽게 변환해요.</div>
+      <button class="upload-mode-btn active" id="modePersonBtn" type="button" onclick="triggerUploadMode('person')" style="background:transparent; border:none; width:45%; height:120px; cursor:pointer;">
       </button>
       <button class="upload-mode-btn" id="modeObjectBtn" type="button" onclick="triggerUploadMode('object')" style="background:rgba(255,255,255,0.85); border:none; border-radius:20px; padding:20px; width:45%; cursor:pointer;">
         <div class="upload-mode-title">🧸 사물 · 동물 · 장난감</div>
